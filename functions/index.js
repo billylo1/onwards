@@ -8,7 +8,7 @@ exports.findMyTwitterFollowersOnPostNews = functions.https.onRequest(async (requ
   let handle = request.query.handle;
   if (handle != undefined) {
     let postList = await getFollowing(handle);
-    let responseHTML = `<html><body>These followers of yours are on post.news. You can follow them using the links below.<br /><br />`;
+    let responseHTML = `<html><body style="font-family:Arial, Helvetica, sans-serif;">These followers of yours are on post.news. You can follow them using the links below.<br /><br />`;
 
     for (let post of postList) {
         responseHTML += `<a href="https://post.news/${post}" target="_blank" rel="noopener noreferrer">${post}</a><br />`;
@@ -48,10 +48,28 @@ async function getUserId(handle) {
 
 async function getFollowing(handle) {
     let userId = await getUserId(handle);
-    const url = `https://api.twitter.com/2/users/${userId}/following?max_results=1000`;
-    let response = await fetch(url, options);
-    let data = await response.json();
-    let followings = data.data;
+
+    let nextToken = "";
+    let followings = [];
+    let count = 0;
+    while (nextToken != undefined) {
+        let url = `https://api.twitter.com/2/users/${userId}/following?max_results=1000`;
+        if (nextToken != "") {
+            url += `&pagination_token=${nextToken}`;
+        }
+        let response = await fetch(url, options);
+        let responseJson = await response.json();
+        nextToken = responseJson.meta.next_token;
+
+        if (responseJson.data != undefined) {
+            for (let user of responseJson.data) {
+                followings.push(user);
+            }
+            count++;
+        } else {
+            break;
+        }
+    }
     let postList = [];
     let promises = [];
 
@@ -69,8 +87,7 @@ async function getFollowing(handle) {
             postList.push(following);
         }
     }
-    console.log(`${postList}`);
-
+    
     return postList.sort();
 }
 
