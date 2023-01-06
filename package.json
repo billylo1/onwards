@@ -1,0 +1,19 @@
+{
+  "name": "onwards",
+  "version": "1.0.0",
+  "description": "get followers available in post.news and mastodon",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "got": "^12.5.3",
+    "needle": "^3.2.0",
+    "node-fetch": "^3.3.0",
+    "oauth-1.0a": "^2.2.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
