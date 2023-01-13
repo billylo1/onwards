@@ -7,6 +7,9 @@ exports.findMyTwitterFollowersOnPostNews = functions.https.onRequest(async (requ
   
   let handle = request.query.handle;
   if (handle != undefined) {
+    if (handle.charAt(0) == "@") {
+        handle = handle.substring(1);
+    }
     let postList = await getFollowing(handle);
     let responseHTML = `<html><body style="font-family:Arial, Helvetica, sans-serif;">These followers of yours are on post.news. You can follow them using the links below.<br /><br />`;
 
